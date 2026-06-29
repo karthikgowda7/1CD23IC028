@@ -158,3 +158,16 @@ I would keep notification persistence and email delivery as separate operations.
 This approach improves scalability, fault tolerance, and retry capability while keeping the API responsive.
 
 
+# Stage 6
+
+For the priority inbox, I assigned weights based on importance:
+
+Placement = 3
+Result = 2
+Event = 1
+
+Notifications are first sorted by weight and then by recency when two notifications belong to the same category.
+
+The API returns only the top N notifications requested by the user.
+
+For large-scale systems, maintaining a min-heap of size N would be more efficient than sorting the entire collection repeatedly. This allows the system to continuously maintain the highest-priority notifications as new notifications arrive.
