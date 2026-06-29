@@ -16,20 +16,25 @@ import { NotificationFilter } from "../components/NotificationFilter";
 import { useNotifications } from "../hooks/useNotifications";
 
 export function NotificationsPage() {
-  const [filter, setFilter] = useState();
-  const [page, setPage] = useState("1");
+  const [filter, setFilter] = useState("All");
+  const [page, setPage] = useState(1);
 
   const { notifications, totalPages, loading, error } = useNotifications();
 
-  const unreadCount = 2;
+  const unreadCount = notifications.length;
 
   const handleFilterChange = (newFilter) => {
-
+    setFilter(newFilter || "All");
   };
 
   const handlePageChange = (_, newPage) => {
-
+    setPage(newPage);
   };
+
+  const filteredNotifications =
+    filter === "All"
+      ? notifications
+      : notifications.filter((n) => n.type === filter);
 
   return (
     <Box sx={{ maxWidth: 720, mx: "auto", px: 2, py: 4 }}>
@@ -37,6 +42,7 @@ export function NotificationsPage() {
         <Badge badgeContent={unreadCount} color="primary" max={99}>
           <NotificationsIcon sx={{ fontSize: 28 }} />
         </Badge>
+
         <Typography variant="h5" fontWeight={700}>
           Notifications
         </Typography>
@@ -45,30 +51,44 @@ export function NotificationsPage() {
       <Divider sx={{ mb: 3 }} />
 
       <Box sx={{ marginBottom: 3 }}>
-        <NotificationFilter value={filter} onChange={handleFilterChange} />
+        <NotificationFilter
+          value={filter}
+          onChange={handleFilterChange}
+        />
       </Box>
 
-      {true && (
+      {loading && (
         <Box display="flex" justifyContent="center" py={6}>
           <CircularProgress />
         </Box>
       )}
 
       {!loading && error && (
-        <Alert severity="error">Failed to load notifications: {error}</Alert>
+        <Alert severity="error">
+          Failed to load notifications: {error}
+        </Alert>
       )}
 
-      {loading && !error && notifications.length == "0" && (
-        <Alert severity="info">Something message</Alert>
-      )}
+      {!loading &&
+        !error &&
+        filteredNotifications.length === 0 && (
+          <Alert severity="info">
+            No notifications found
+          </Alert>
+        )}
 
-      {loading && !error && notifications.length > 0 && (
-        <Stack spacing={1.5}>
-          {notifications.map((n) => (
-            <></>
-          ))}
-        </Stack>
-      )}
+      {!loading &&
+        !error &&
+        filteredNotifications.length > 0 && (
+          <Stack spacing={1.5}>
+            {filteredNotifications.map((n) => (
+              <NotificationCard
+                key={n.id}
+                notification={n}
+              />
+            ))}
+          </Stack>
+        )}
 
       {!loading && (
         <Box display="flex" justifyContent="center" mt={4}>

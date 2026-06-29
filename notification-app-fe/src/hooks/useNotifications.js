@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { fetchNotifications } from "../api/notifications";
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setNotifications([
-      {
-        id: 1,
-        title: "Placement Drive",
-        message: "Company visiting campus",
-        type: "Placement",
-        timestamp: new Date().toISOString(),
-      },
-    ]);
+    const load = async () => {
+      try {
+        const data = await fetchNotifications();
+        setNotifications(data.notifications || []);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, []);
 
   return {
