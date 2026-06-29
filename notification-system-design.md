@@ -171,3 +171,38 @@ Notifications are first sorted by weight and then by recency when two notificati
 The API returns only the top N notifications requested by the user.
 
 For large-scale systems, maintaining a min-heap of size N would be more efficient than sorting the entire collection repeatedly. This allows the system to continuously maintain the highest-priority notifications as new notifications arrive.
+
+# Stage 7
+
+The existing frontend implementation contained several issues such as incomplete event handlers, incorrect loading conditions, missing components, invalid imports and rendering logic that prevented the application from functioning correctly.
+
+To stabilise the application, the following changes were made:
+
+- Fixed notification fetching and state management.
+- Implemented notification card rendering.
+- Added notification type filtering (All, Placement, Result and Event).
+- Added unread notification count display.
+- Fixed pagination handling.
+- Added proper loading, empty state and error handling.
+- Integrated logging middleware calls at suitable points in the application flow.
+- Improved component structure and ensured React key handling was correct.
+- Ensured compatibility with Material UI components.
+
+For the Priority Inbox requirement, notifications are ranked using a weighted priority model:
+
+- Placement = 3
+- Result = 2
+- Event = 1
+
+When notifications have the same priority, the most recent notification is ranked higher.
+
+To efficiently maintain the top N notifications while new notifications arrive, a min-heap (priority queue) of size N can be maintained. This avoids repeatedly sorting the entire dataset and keeps insertion complexity efficient.
+
+The frontend provides:
+- Notification listing
+- Notification filtering by type
+- Priority notification support
+- Pagination
+- Responsive layout for desktop and mobile screens
+
+Application screenshots have been included in the repository under the screenshots directory.
